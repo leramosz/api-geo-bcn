@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Geo BCN
-  version: 1.1.0
+  version: 1.1.1
   description: > 
     The Geo BCN API provides access to geographical information about public water fountains in Barcelona. It allows clients to retrieve details such as location, name, street, and geospatial coordinates of each fountain.  The API is designed to support urban mobility, environmental initiatives, and open data services by offering reliable and standardized access to this information. Typical use cases include integrating public fountain data into mobile applications, city maps, tourism platforms, or environmental research tools.
   contact:
@@ -522,6 +522,7 @@ components:
     WaterFontId:
       schema:
         type: string
+        pattern: '^(?!00)\d{2}-(?!000)\d{3}$'
         example: '01-008'
       in: path
       name: waterFontId
