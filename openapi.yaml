@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Geo BCN
-  version: 1.0.0
+  version: 1.1.0
   description: > 
     The Geo BCN API provides access to geographical information about public water fountains in Barcelona. It allows clients to retrieve details such as location, name, street, and geospatial coordinates of each fountain.  The API is designed to support urban mobility, environmental initiatives, and open data services by offering reliable and standardized access to this information. Typical use cases include integrating public fountain data into mobile applications, city maps, tourism platforms, or environmental research tools.
   contact:
@@ -35,7 +35,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WaterFontResponse"
+                $ref: "#/components/schemas/WaterFontsResponse"
               examples:
                 example-get-water-fonts:
                   value:
@@ -79,9 +79,64 @@ paths:
           $ref: "#/components/responses/BadGateway"
         '503':
           $ref: "#/components/responses/ServiceUnavailable"
+  /water-fonts/{waterFontId}:
+    parameters:
+      - $ref: "#/components/parameters/AcceptLanguageHeader"
+      - $ref: "#/components/parameters/XRequestIdHeaderReq"
+      - $ref: '#/components/parameters/WaterFontId'
+    get:
+      summary: Water font list information by id
+      description: Retrieve water font information by id.
+      operationId: getWaterFontsWaterFontId
+      tags:
+        - Water Fonts
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WaterFontResponse"
+              examples:
+                example-get-water-fonts:
+                  value:
+                    data:
+                      id: "01-004"
+                      name: "Font del Comte"
+                      street: "C/Comte de Santa Clara"
+                      streetNumber: "10"
+                      latitude: 41.379145587
+                      longitude: 2.18896392
+          headers:
+            X-Request-ID:
+              $ref: "#/components/headers/XRequestIdHeader"
+        '400':
+          $ref: "#/components/responses/BadRequest"
+        '401':
+          $ref: "#/components/responses/Unauthorized"
+        '403':
+          $ref: "#/components/responses/Forbidden"
+        '404':
+          $ref: "#/components/responses/NotFound"
+        '405':
+          $ref: "#/components/responses/MethodNotAllowed"
+        '406':
+          $ref: "#/components/responses/NotAcceptable"
+        '408':
+          $ref: "#/components/responses/RequestTimeout"
+        '422':
+          $ref: "#/components/responses/UnprocessableEntity"
+        '429':
+          $ref: "#/components/responses/TooManyRequests"
+        '500':
+          $ref: "#/components/responses/InternalServerError"
+        '502':
+          $ref: "#/components/responses/BadGateway"
+        '503':
+          $ref: "#/components/responses/ServiceUnavailable"
 components:
   schemas:
-    WaterFontResponse:
+    WaterFontsResponse:
       title: WaterFontsResponse
       type: object
       properties:
@@ -94,6 +149,12 @@ components:
           $ref: "#/components/schemas/PaginationInfo"
       required:
         - data
+    WaterFontResponse:
+      title: WaterFontResponse
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/WaterFontData"
     WaterFontData:
       title: WaterFontData
       description: Water font data object.
@@ -458,6 +519,14 @@ components:
       in: query
       name: paginationKey
       description: Page identifier. If this parameter is not include the result of the search returns the first page but if you want another page this field is necessary to include it.
+    WaterFontId:
+      schema:
+        type: string
+        example: '01-008'
+      in: path
+      name: waterFontId
+      description: Water font identifier.
+      required: true
   headers:
     XRequestIdHeader:
       schema:
