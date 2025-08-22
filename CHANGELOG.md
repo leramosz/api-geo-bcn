@@ -8,11 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Changed endpoint name:
     - GET /drinking-water-fountains
-    - GET /drinking-water-fountains/{drinkingWaterFontId}
+    - GET /drinking-water-fountains/{drinkingWaterFountainId}
+- Changed waterFontId to drinkingWaterFountainId path param
 
 ## [1.1.1] - 2025-08-17
 ### Added
-- Added regexp for drinkingWaterFontId path parameter
+- Added regexp for waterFontId path parameter
 
 ## [1.1.0] - 2025-08-17
 ### Added
