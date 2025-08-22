@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Geo BCN
-  version: 1.1.1
+  version: 1.1.2
   description: > 
     The Geo BCN API provides access to geographical information about public water fountains in Barcelona. It allows clients to retrieve details such as location, name, street, and geospatial coordinates of each fountain.  The API is designed to support urban mobility, environmental initiatives, and open data services by offering reliable and standardized access to this information. Typical use cases include integrating public fountain data into mobile applications, city maps, tourism platforms, or environmental research tools.
   contact:
@@ -14,18 +14,18 @@ servers:
   - url: http://localhost:8080/geo-bcn/v1
     description: Local.
 tags:
-  - name: Water Fonts
+  - name: Drinking Water Fonts
     description: Gets geographical information for water fonts in BCN.
 paths:
-  /water-fonts:
+  /drinking-water-fountains:
     parameters:
       - $ref: "#/components/parameters/AcceptLanguageHeader"
       - $ref: "#/components/parameters/XRequestIdHeaderReq"
       - $ref: '#/components/parameters/PaginationPageSize'
       - $ref: '#/components/parameters/PaginationPageKey'
     get:
-      summary: Water font list information
-      description: Retrieve water font list information.
+      summary: Drinking Water fountain list information
+      description: Retrieve drinking water fountain list information.
       operationId: getWaterFonts
       tags:
         - Water Fonts
@@ -35,7 +35,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WaterFontsResponse"
+                $ref: "#/components/schemas/DrinkingWaterFountainsResponse"
               examples:
                 example-get-water-fonts:
                   value:
@@ -79,24 +79,24 @@ paths:
           $ref: "#/components/responses/BadGateway"
         '503':
           $ref: "#/components/responses/ServiceUnavailable"
-  /water-fonts/{waterFontId}:
+  /drinking-water-fountains/{drinkingWaterFontId}:
     parameters:
       - $ref: "#/components/parameters/AcceptLanguageHeader"
       - $ref: "#/components/parameters/XRequestIdHeaderReq"
-      - $ref: '#/components/parameters/WaterFontId'
+      - $ref: '#/components/parameters/DrinkingWaterFontId'
     get:
       summary: Water font list information by id
       description: Retrieve water font information by id.
       operationId: getWaterFontsWaterFontId
       tags:
-        - Water Fonts
+        - Drinking Water Fonts
       responses:
         '200':
           description: OK.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WaterFontResponse"
+                $ref: "#/components/schemas/DrinkingWaterFountainResponse"
               examples:
                 example-get-water-fonts:
                   value:
@@ -136,44 +136,44 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
 components:
   schemas:
-    WaterFontsResponse:
-      title: WaterFontsResponse
+    DrinkingWaterFountainsResponse:
+      title: DrinkingWaterFountainsResponse
       type: object
       properties:
         data:
           type: array
-          description: Water font list response object.
+          description: Drinking water fountains list response object.
           items:
-            $ref: "#/components/schemas/WaterFontData"
+            $ref: "#/components/schemas/DrinkingWaterFountainData"
         pagination:
           $ref: "#/components/schemas/PaginationInfo"
       required:
         - data
-    WaterFontResponse:
-      title: WaterFontResponse
+    DrinkingWaterFountainResponse:
+      title: DrinkingWaterFountainResponse
       type: object
       properties:
         data:
-          $ref: "#/components/schemas/WaterFontData"
-    WaterFontData:
-      title: WaterFontData
-      description: Water font data object.
+          $ref: "#/components/schemas/DrinkingWaterFountainData"
+    DrinkingWaterFountainData:
+      title: DrinkingWaterFountainData
+      description: Driking water fountain data object.
       type: object
       properties:
         id:
           type: string
-          description: Unique water font identifier.
+          description: Unique drinking water fountain identifier.
           minLength: 1
           maxLength: 50
         name:
           type: string
-          description: Name of the water font.
+          description: Name of the drinking water fountain.
         street:
           type: string
-          description: Street where the water font is located.
+          description: Street where the drinking water fountain is located.
         streetNumber:
           type: string
-          description: Street number where the water font is located.
+          description: Street number where the drinking water fountain is located.
         latitude:
           type: number
           format: double
@@ -185,7 +185,7 @@ components:
     PaginationInfo:
       title: PaginationInfo
       type: object
-      description: Accounts pagination information.
+      description: Pagination information.
       properties:
         pageSize:
           type: integer
@@ -519,14 +519,14 @@ components:
       in: query
       name: paginationKey
       description: Page identifier. If this parameter is not include the result of the search returns the first page but if you want another page this field is necessary to include it.
-    WaterFontId:
+    DrinkingWaterFontId:
       schema:
         type: string
         pattern: '^(?!00)\d{2}-(?!000)\d{3}$'
         example: '01-008'
       in: path
-      name: waterFontId
-      description: Water font identifier.
+      name: drinkingWaterFontId
+      description: Drinking water font identifier.
       required: true
   headers:
     XRequestIdHeader:
