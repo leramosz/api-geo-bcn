@@ -1,1 +1,18 @@
-The Geo BCN API provides access to geographical information about public water fountains in Barcelona. It allows clients to retrieve details such as location, name, street, and geospatial coordinates of each fountain.  The API is designed to support urban mobility, environmental initiatives, and open data services by offering reliable and standardized access to this information. Typical use cases include integrating public fountain data into mobile applications, city maps, tourism platforms, or environmental research tools.
+# Geo BCN API
+
+Contract-first (OpenAPI 3.0.3) API over Barcelona's public fountains, designed to be backed by PostgreSQL + PostGIS.
+
+- **Resources:** drinking water fountains (`fonts_beure`, ~1,760) and ornamental fountains (`fonts_ornamentals`, ~335) from Barcelona Open Data.
+- **Queries:** proximity (`lat`, `lon`, `radius`) ordered by distance, bounding box (`bbox`), district and neighbourhood filters.
+- **Representations:** `application/json` and `application/geo+json`.
+- **Pagination:** keyset cursor (`limit`, `cursor`).
+
+The contract lives in [`openapi.yaml`](openapi.yaml) and changes are tracked in [`CHANGELOG.md`](CHANGELOG.md).
+
+## Lint
+
+```sh
+npx @stoplight/spectral-cli@6.15.0 lint openapi.yaml
+```
+
+CI runs the same check on every pull request.

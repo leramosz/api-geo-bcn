@@ -1,0 +1,17 @@
+name: Lint OpenAPI
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+
+jobs:
+  spectral:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Spectral
+        run: npx --yes @stoplight/spectral-cli@6.15.0 lint openapi.yaml --fail-severity=warn
