@@ -3,11 +3,10 @@ info:
   title: Geo BCN
   version: 2.0.0
   description: >
-    The Geo BCN API provides geographical information about public fountains in Barcelona,
-    backed by PostGIS. It exposes two independent resources, drinking water fountains and
-    ornamental fountains, with proximity search, bounding-box search and administrative
-    filters (district and neighbourhood). Data is sourced from Barcelona Open Data
-    (datasets "fonts_beure" and "fonts_ornamentals").
+    The Geo BCN API provides geographical information about public drinking water fountains
+    in Barcelona, backed by PostGIS. It offers proximity search, bounding-box search and
+    administrative filters (district and neighbourhood). Data is sourced from the Barcelona
+    Open Data dataset "fonts_beure".
 
 
     Every collection can be returned as plain JSON (`application/json`) or as a GeoJSON
@@ -24,8 +23,6 @@ servers:
 tags:
   - name: Drinking Water Fountains
     description: Public drinking water fountains in Barcelona.
-  - name: Ornamental Fountains
-    description: Ornamental (non drinking) fountains in Barcelona.
 security:
   - apiKeyAuth: []
   - bearerAuth: []
@@ -169,117 +166,6 @@ paths:
           $ref: "#/components/responses/InternalServerError"
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
-  /ornamental-fountains:
-    parameters:
-      - $ref: "#/components/parameters/AcceptLanguageHeader"
-      - $ref: "#/components/parameters/XRequestIdHeaderReq"
-    get:
-      summary: Search ornamental fountains
-      description: |-
-        Returns ornamental fountains matching the given filters. Same filter semantics as
-        `GET /drinking-water-fountains`.
-      operationId: searchOrnamentalFountains
-      tags:
-        - Ornamental Fountains
-      parameters:
-        - $ref: "#/components/parameters/Latitude"
-        - $ref: "#/components/parameters/Longitude"
-        - $ref: "#/components/parameters/Radius"
-        - $ref: "#/components/parameters/BoundingBox"
-        - $ref: "#/components/parameters/DistrictId"
-        - $ref: "#/components/parameters/NeighbourhoodId"
-        - $ref: "#/components/parameters/Limit"
-        - $ref: "#/components/parameters/Cursor"
-      responses:
-        "200":
-          description: OK.
-          headers:
-            X-Request-ID:
-              $ref: "#/components/headers/XRequestIdHeader"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrnamentalFountainsResponse"
-              examples:
-                byDistrict:
-                  summary: District filter (districtId=01)
-                  value:
-                    data:
-                      - id: "01-001"
-                        name: "Font d'Emili Vendrell"
-                        address: "Plaça Emili Vendrell - Joaquim Costa, 7"
-                        location:
-                          latitude: 41.381390855
-                          longitude: 2.166877623
-                        district:
-                          id: "01"
-                          name: "Ciutat Vella"
-                        neighbourhood:
-                          id: "01"
-                          name: "el Raval"
-                    pagination:
-                      limit: 50
-                      nextCursor: "MDEtMDAx"
-                      links:
-                        self: "/geo-bcn/v2/ornamental-fountains?districtId=01"
-                        next: "/geo-bcn/v2/ornamental-fountains?districtId=01&cursor=MDEtMDAx"
-            application/geo+json:
-              schema:
-                $ref: "#/components/schemas/OrnamentalFountainFeatureCollection"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "406":
-          $ref: "#/components/responses/NotAcceptable"
-        "429":
-          $ref: "#/components/responses/TooManyRequests"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavailable"
-  /ornamental-fountains/{ornamentalFountainId}:
-    parameters:
-      - $ref: "#/components/parameters/AcceptLanguageHeader"
-      - $ref: "#/components/parameters/XRequestIdHeaderReq"
-      - $ref: "#/components/parameters/OrnamentalFountainId"
-    get:
-      summary: Get an ornamental fountain
-      description: Retrieves an ornamental fountain by its identifier.
-      operationId: getOrnamentalFountain
-      tags:
-        - Ornamental Fountains
-      responses:
-        "200":
-          description: OK.
-          headers:
-            X-Request-ID:
-              $ref: "#/components/headers/XRequestIdHeader"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/OrnamentalFountainResponse"
-            application/geo+json:
-              schema:
-                $ref: "#/components/schemas/OrnamentalFountainFeature"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "406":
-          $ref: "#/components/responses/NotAcceptable"
-        "429":
-          $ref: "#/components/responses/TooManyRequests"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-        "503":
-          $ref: "#/components/responses/ServiceUnavailable"
 components:
   schemas:
     # ---------- Shared value objects ----------
@@ -397,59 +283,6 @@ components:
           $ref: "#/components/schemas/DrinkingWaterFountain"
       required:
         - data
-    # ---------- Ornamental fountains ----------
-    OrnamentalFountain:
-      title: OrnamentalFountain
-      type: object
-      properties:
-        id:
-          type: string
-          pattern: "^(?!00)\\d{2}-(?!000)\\d{3}$"
-          description: Unique among ornamental fountains only. The same code may identify a different drinking water fountain.
-        name:
-          type: string
-          nullable: true
-          description: Source name without the "NN-NNN. " prefix.
-        address:
-          type: string
-          nullable: true
-          description: Free-text address as published in the source dataset.
-        location:
-          $ref: "#/components/schemas/Location"
-        district:
-          $ref: "#/components/schemas/District"
-        neighbourhood:
-          $ref: "#/components/schemas/Neighbourhood"
-        distance:
-          $ref: "#/components/schemas/Distance"
-      required:
-        - id
-        - name
-        - address
-        - location
-        - district
-        - neighbourhood
-    OrnamentalFountainsResponse:
-      title: OrnamentalFountainsResponse
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrnamentalFountain"
-        pagination:
-          $ref: "#/components/schemas/CursorPagination"
-      required:
-        - data
-        - pagination
-    OrnamentalFountainResponse:
-      title: OrnamentalFountainResponse
-      type: object
-      properties:
-        data:
-          $ref: "#/components/schemas/OrnamentalFountain"
-      required:
-        - data
     # ---------- GeoJSON (RFC 7946) ----------
     PointGeometry:
       title: PointGeometry
@@ -516,55 +349,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DrinkingWaterFountainFeature"
-      required:
-        - type
-        - features
-    OrnamentalFountainFeature:
-      title: OrnamentalFountainFeature
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-            - Feature
-        id:
-          type: string
-        geometry:
-          $ref: "#/components/schemas/PointGeometry"
-        properties:
-          description: Same fields as OrnamentalFountain, except `location`.
-          type: object
-          properties:
-            name:
-              type: string
-              nullable: true
-            address:
-              type: string
-              nullable: true
-            district:
-              $ref: "#/components/schemas/District"
-            neighbourhood:
-              $ref: "#/components/schemas/Neighbourhood"
-            distance:
-              $ref: "#/components/schemas/Distance"
-      required:
-        - type
-        - id
-        - geometry
-        - properties
-    OrnamentalFountainFeatureCollection:
-      title: OrnamentalFountainFeatureCollection
-      type: object
-      description: Pagination travels in the `Link` response header (RFC 8288) for GeoJSON responses.
-      properties:
-        type:
-          type: string
-          enum:
-            - FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: "#/components/schemas/OrnamentalFountainFeature"
       required:
         - type
         - features
@@ -900,15 +684,6 @@ components:
         type: string
         pattern: "^(?!00)\\d{2}-(?!000)\\d{3}$"
         example: "01-004"
-    OrnamentalFountainId:
-      name: ornamentalFountainId
-      in: path
-      required: true
-      description: Ornamental fountain identifier (CODI in the source dataset).
-      schema:
-        type: string
-        pattern: "^(?!00)\\d{2}-(?!000)\\d{3}$"
-        example: "01-001"
   headers:
     XRequestIdHeader:
       description: Request UUID, echoed from the request or generated by the server.

@@ -2,7 +2,7 @@
 
 Contract-first (OpenAPI 3.0.3) API over Barcelona's public fountains, designed to be backed by PostgreSQL + PostGIS.
 
-- **Resources:** drinking water fountains (`fonts_beure`, ~1,760) and ornamental fountains (`fonts_ornamentals`, ~335) from Barcelona Open Data.
+- **Resource:** public drinking water fountains (`fonts_beure`, ~1,760) from Barcelona Open Data. Ornamental fountains are out of scope.
 - **Queries:** proximity (`lat`, `lon`, `radius`) ordered by distance, bounding box (`bbox`), district and neighbourhood filters.
 - **Representations:** `application/json` and `application/geo+json`.
 - **Pagination:** keyset cursor (`limit`, `cursor`).
