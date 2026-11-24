@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-11-24
 ### Added
-- GET /ornamental-fountains and GET /ornamental-fountains/{ornamentalFountainId} as an independent resource (ids collide with drinking fountain ids, so they are not merged).
 - Proximity search (`lat`, `lon`, `radius`) ordered by distance, with `distance` in meters per item.
 - Bounding-box search (`bbox`) and `districtId` / `neighbourhoodId` filters.
 - `application/geo+json` (RFC 7946) representation via content negotiation.
